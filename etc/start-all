@@ -1,0 +1,37 @@
+#!/bin/bash
+
+echo "Creating folders if not already exist"
+mkdir -p /data/mmsdb /data/backupdb /data/heads /data/mongodb-releases 
+
+echo "Checking for variable definition"
+
+# // substitue hostname and email
+if [ "$mms_email" = "" ]; then
+	echo "ERROR: please specify enviroment variable in docker run command. i.e., -e mms_email=admin@example.com "
+	exit 0
+fi
+
+if [ "$mms_hostname" = "" ]; then
+	mms_hostname="localhost"
+fi
+
+if [ ! -d "/data/mmsdb" ]; then
+	echo "ERROR: /data/mmsdb does not exist. "
+	echo "please use -v to specify a /data shared directory that contains 4 sub directories: mmsdb, backupdb, heads, mongodb-releases "
+	exit 0
+fi
+
+echo "Check OK"
+
+# variable substitution
+sed -i "s/localhost:808/$mms_hostname:808/g" /opt/mongodb/mms/conf/conf-mms.properties
+sed -i "s/admin@example.com/$mms_email/g" /opt/mongodb/mms/conf/conf-mms.properties
+
+
+# start service
+mongod --fork --dbpath /data/mmsdb --logpath /data/mmsdb/mmsdb.log  
+mongod --fork --dbpath /data/backupdb --logpath /data/backupdb/backupdb.log  --port 27018
+service mongodb-mms restart
+service mongodb-mms-backup-daemon restart
+
+
