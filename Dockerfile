@@ -31,7 +31,7 @@ RUN rpm -U /opt/mongodb/mms/agent/monitoring/mongodb-mms-monitoring-agent-2.4.2.
 RUN rpm -U /opt/mongodb/mms/agent/backup/mongodb-mms-backup-agent-2.3.1.160-1.x86_64.rpm
 
 ENV mms_hostname localhost
-RUN sed -i "s/mmsBaseUrl=.*/mmsBaseUrl=$mms_hostname:8080/g" /etc/mongodb-mms/monitor-agent.config
+RUN sed -i "s/mmsBaseUrl=.*/mmsBaseUrl=$mms_hostname:8080/g" /etc/mongodb-mms/monitoring-agent.config
 RUN sed -i "s/mothership=.*/mothership=$mms_hostname:8081/g" /etc/mongodb-mms/backup-agent.config
 
 #CMD /opt/start-all && tail -F /opt/mongodb/mms-backup-daemon/logs/daemon.log
@@ -62,6 +62,6 @@ CMD /bin/bash
  
 
 ##### Build ####
-#  docker build --rm=true -t tjworks/mms .
+# sudo docker build --rm=true -t tjworks/mms .
 
  
