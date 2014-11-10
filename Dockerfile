@@ -26,9 +26,6 @@ RUN rm mongodb-mms-backup-daemon-1.5.1.137-1.x86_64.rpm
 RUN yum install -y sudo
 ENV mms_email admin@example.com
 
-
-
-
 RUN yum install -y logrotate
 RUN rpm -U /opt/mongodb/mms/agent/monitoring/mongodb-mms-monitoring-agent-2.4.2.113-1.x86_64.rpm
 RUN rpm -U /opt/mongodb/mms/agent/backup/mongodb-mms-backup-agent-2.3.1.160-1.x86_64.rpm
@@ -36,13 +33,15 @@ RUN rpm -U /opt/mongodb/mms/agent/backup/mongodb-mms-backup-agent-2.3.1.160-1.x8
 #CMD /opt/start-all && tail -F /opt/mongodb/mms-backup-daemon/logs/daemon.log
 ADD etc/conf-mms.properties /opt/mongodb/mms/conf/conf-mms.properties
 ADD etc/conf-daemon.properties /opt/mongodb/mms-backup-daemon/conf/conf-daemon.properties
-ADD etc/start-all /opt/start-all
-
+ENV mms_hostname localhost
+ADD etc/start-all /opt/start-mms
 CMD /bin/bash
 
 
-# Manual steps:
+# Manual steps for creating image:
 # 	start /opt/start-all
+#	edit /etc/mongodb-mms/monitoring-agent
+#	edit /etc/mongodb-mms/backup-agent
 # 	rm /data/*
 #	commit
 
@@ -51,22 +50,16 @@ CMD /bin/bash
 
 
 # 	Install docker 
-# 	docker run -i -v /data:/data -p 8080:8080 -p 8081:8081 -t tjworks/mms 
-# 		/opt/start-all
+#	mount a volume or create a directory with sufficient space at /mmsdata
+# 	docker run -i -v /mmsdata:/data -p 8080:8080 -p 8081:8081 -e mms_email=admin@example.com -t tjworks/mms 
+# 		/opt/start-mms
+#		Go to http://localhost:8080/settings/monitoring-agent, obtain api key
+#		update api key for monitoring-agent & backup-agent
+#		restart both agents
 
-
-# startup sequence
-# mongod --fork --dbpath /data/mmsdb --logpath /data/mmsdb/mmsdb.log  
-# mongod --fork --dbpath /data/backupdb --logpath /data/mmsdb.log  --port 27018
-# service mongodb-mms start
-# service mongodb-mms-backup-daemon start
+ 
 
 ##### Build ####
 #  docker build --rm=true -t tjworks/mms .
 
-
-#### Install ###
-#	install docker
-#	docker run -i -v /data:/data -p 8080:8080 -p 8081:8081 -e mms_email=admin@example.net -t tjworks/mms 
-
-#   cp /data/gen.key /etc/mongodb-mms
+ 
