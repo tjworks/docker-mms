@@ -30,8 +30,8 @@ sed -i "s/admin@example.com/$mms_email/g" /opt/mongodb/mms/conf/conf-mms.propert
 
 # start service
 mongod --fork --dbpath /data/mmsdb --logpath /data/mmsdb/mmsdb.log  
-mongod --fork --dbpath /data/backupdb --logpath /data/backupdb/backupdb.log  --port 27018
-service mongodb-mms restart
-service mongodb-mms-backup-daemon restart
+mongod --fork --dbpath /data/backupdb --logpath /data/backupdb.log  --port 27018
+service mongodb-mms start
+service mongodb-mms-backup-daemon start
 
 
