@@ -30,11 +30,15 @@ RUN yum install -y logrotate
 RUN rpm -U /opt/mongodb/mms/agent/monitoring/mongodb-mms-monitoring-agent-2.4.2.113-1.x86_64.rpm
 RUN rpm -U /opt/mongodb/mms/agent/backup/mongodb-mms-backup-agent-2.3.1.160-1.x86_64.rpm
 
+ENV mms_hostname localhost
+RUN sed -i "s/mmsBaseUrl=.*/mmsBaseUrl=$mms_hostname:8080/g" /etc/mongodb-mms/monitor-agent.config
+RUN sed -i "s/mothership=.*/mothership=$mms_hostname:8081/g" /etc/mongodb-mms/backup-agent.config
+
 #CMD /opt/start-all && tail -F /opt/mongodb/mms-backup-daemon/logs/daemon.log
 ADD etc/conf-mms.properties /opt/mongodb/mms/conf/conf-mms.properties
 ADD etc/conf-daemon.properties /opt/mongodb/mms-backup-daemon/conf/conf-daemon.properties
 
-ENV mms_hostname localhost
+ADD etc/gen.key /etc/mongodb-mms/gen.key
 ADD etc/start-mms /opt/start-mms
 CMD /bin/bash
 
