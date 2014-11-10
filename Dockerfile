@@ -26,14 +26,34 @@ RUN rm mongodb-mms-backup-daemon-1.5.1.137-1.x86_64.rpm
 RUN yum install -y sudo
 ENV mms_email admin@example.com
 
-ADD etc/start-all /opt/start-all
+
+
+
+RUN yum install -y logrotate
+RUN rpm -U /opt/mongodb/mms/agent/monitoring/mongodb-mms-monitoring-agent-2.4.2.113-1.x86_64.rpm
+RUN rpm -U /opt/mongodb/mms/agent/backup/mongodb-mms-backup-agent-2.3.1.160-1.x86_64.rpm
+
+#CMD /opt/start-all && tail -F /opt/mongodb/mms-backup-daemon/logs/daemon.log
 ADD etc/conf-mms.properties /opt/mongodb/mms/conf/conf-mms.properties
 ADD etc/conf-daemon.properties /opt/mongodb/mms-backup-daemon/conf/conf-daemon.properties
-#CMD /opt/start-all && tail -F /opt/mongodb/mms-backup-daemon/logs/daemon.log
+ADD etc/start-all /opt/start-all
+
 CMD /bin/bash
+
+
+# Manual steps:
+# 	start /opt/start-all
+# 	rm /data/*
+#	commit
 
 # bits dir
 # http://www.mongodb.com/subscription/downloads/mms
+
+
+# 	Install docker 
+# 	docker run -i -v /data:/data -p 8080:8080 -p 8081:8081 -t tjworks/mms 
+# 		/opt/start-all
+
 
 # startup sequence
 # mongod --fork --dbpath /data/mmsdb --logpath /data/mmsdb/mmsdb.log  
@@ -41,19 +61,12 @@ CMD /bin/bash
 # service mongodb-mms start
 # service mongodb-mms-backup-daemon start
 
-# manual steps:
-# 	register user
-# 	install agent
-
 ##### Build ####
 #  docker build --rm=true -t tjworks/mms .
 
-#####  Local test run ###
-# docker run -i -v /home/docker/osx/data/docker-mms:/data  -t tjworks/mms -p 8080:8080 /bin/bash
-# docker run -i -v /home/docker/osx/data/docker-mms:/data  -t tjworks/mms /bin/bash
 
 #### Install ###
 #	install docker
-#	docker run -i -v /data:/data -p 8080:8080 -p 8081:8081 -t tjworks/mms 
+#	docker run -i -v /data:/data -p 8080:8080 -p 8081:8081 -e mms_email=admin@example.net -t tjworks/mms 
 
-# 	docker run -i -t tjworks/mongo-docs -v /home/docker/osx/mongo-docs:/opt/mongo-docs
+#   cp /data/gen.key /etc/mongodb-mms
