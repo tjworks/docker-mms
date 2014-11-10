@@ -33,8 +33,7 @@ mongod --fork --dbpath /data/mmsdb --logpath /data/mmsdb/mmsdb.log  --smallfiles
 mongod --fork --dbpath /data/backupdb --logpath /data/backupdb.log  --port 27018 --smallfiles 
 service mongodb-mms restart
 service mongodb-mms-backup-daemon restart
-service mongodb-mms-monitoring-agent restart
-service mongodb-mms-backup-agent restart
+
 
 # create a default user: admin@example.com/passw0rd!
 curl 'http://localhost:8080/user/v2/registerCall' -H 'Origin: http://localhost:8080' -H 'Accept-Encoding: gzip,deflate' -H 'Accept-Language: en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36' -H 'Content-Type: application/json; charset=UTF-8' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Referer: http://localhost:8080/user/register' -H 'X-Requested-With: XMLHttpRequest' -H 'Connection: keep-alive' --data-binary '{"username":"'$mms_email'","password":"passw0rd!","groupName":"demo","firstName":"admin","lastName":"demo","challenge":"","response":"","optIn":"false","c":"","kwd":"","state":"","newGroup":true,"invitationToken":"","honeypot":""}' --compressed
@@ -50,6 +49,8 @@ if [ ! "$apiKey" == "" ]; then
 	sed -i "s/mmsApiKey=.*/mmsApiKey=$apiKey/g" /etc/mongodb-mms/monitoring-agent.config
 	sed -i "s/mmsApiKey=.*/mmsApiKey=$apiKey/g" /etc/mongodb-mms/backup-agent.config
 	echo "Updated agent configuration file at /etc/mongodb-mms/"
+
 fi
 
-
+service mongodb-mms-monitoring-agent restart
+service mongodb-mms-backup-agent restart

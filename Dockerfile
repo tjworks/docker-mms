@@ -33,8 +33,9 @@ RUN rpm -U /opt/mongodb/mms/agent/backup/mongodb-mms-backup-agent-2.3.1.160-1.x8
 #CMD /opt/start-all && tail -F /opt/mongodb/mms-backup-daemon/logs/daemon.log
 ADD etc/conf-mms.properties /opt/mongodb/mms/conf/conf-mms.properties
 ADD etc/conf-daemon.properties /opt/mongodb/mms-backup-daemon/conf/conf-daemon.properties
+
 ENV mms_hostname localhost
-ADD etc/start-all /opt/start-mms
+ADD etc/start-mms /opt/start-mms
 CMD /bin/bash
 
 
@@ -53,9 +54,6 @@ CMD /bin/bash
 #	mount a volume or create a directory with sufficient space at /mmsdata
 # 	docker run -i -v /mmsdata:/data -p 8080:8080 -p 8081:8081 -e mms_email=admin@example.com -t tjworks/mms 
 # 		/opt/start-mms
-#		Go to http://localhost:8080/settings/monitoring-agent, obtain api key
-#		update api key for monitoring-agent & backup-agent
-#		restart both agents
 
  
 
