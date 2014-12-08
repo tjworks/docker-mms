@@ -34,8 +34,8 @@ ENV mms_hostname localhost
 ENV mms_url http://localhost:8080
 ENV mms_backup_endpoint localhost:8081
 
-RUN sed -i "s/mmsBaseUrl=.*/mmsBaseUrl=$mms_url/g" /etc/mongodb-mms/monitoring-agent.config
-RUN sed -i "s/mothership=.*/mothership=$mms_backup_endpoint/g" /etc/mongodb-mms/backup-agent.config
+RUN sed -i "s|mmsBaseUrl=.*|mmsBaseUrl=$mms_url|g" /etc/mongodb-mms/monitoring-agent.config
+RUN sed -i "s|mothership=.*|mothership=$mms_backup_endpoint|g" /etc/mongodb-mms/backup-agent.config
 
 #CMD /opt/start-all && tail -F /opt/mongodb/mms-backup-daemon/logs/daemon.log
 ADD etc/conf-mms.properties /opt/mongodb/mms/conf/conf-mms.properties

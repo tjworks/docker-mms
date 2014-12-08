@@ -47,9 +47,17 @@ apiKey=`curl http://localhost:8080/settings/monitoring-agent -s -b curl-cookie |
 # update configuration file
 if [ ! "$apiKey" == "" ]; then
 	sed -i "s/mmsApiKey=.*/mmsApiKey=$apiKey/g" /etc/mongodb-mms/monitoring-agent.config
-	sed -i "s/mmsApiKey=.*/mmsApiKey=$apiKey/g" /etc/mongodb-mms/backup-agent.config
+	sed -i "s/mmsApiKey=.*/mmsApiKey=$apiKey/g" /etc/mongodb-mms/backup-agent.config	
 	echo "Updated agent configuration file at /etc/mongodb-mms/"
 
+fi
+
+if [ ! "$mms_url" == "" ]; then
+	sed -i "s|mmsBaseUrl=.*|mmsBaseUrl=$mms_url|g" /etc/mongodb-mms/monitoring-agent.config	
+fi
+
+if [ ! "$mms_backup_endpoint" == "" ]; then
+	sed -i "s|mothership=.*|mothership=$mms_backup_endpoint|g" /etc/mongodb-mms/backup-agent.config
 fi
 
 service mongodb-mms-monitoring-agent restart
